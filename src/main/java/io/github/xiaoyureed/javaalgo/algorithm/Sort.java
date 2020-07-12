@@ -3,6 +3,7 @@ package io.github.xiaoyureed.javaalgo.algorithm;
 /**
  * 排序算法
  * https://juejin.im/post/5c40837751882525487c5394
+ * https://www.cnblogs.com/wxisme/p/5243631.html
  *
  * @author : xiaoyureed
  * 2020/6/17
@@ -22,13 +23,65 @@ public class Sort {
     public void quickSort(int[] arr) {
         int left = 0;
         int right = arr.length - 1;
-        while (left < right) {
-
-        }
-
+        quickSortRecur(arr, left, right);
     }
 
     private void quickSortRecur(int[] arr, int left, int right) {
+        if (left >= right) return;
+
+        int index = left + 1;
+        for (int i = index; i <= right; i++) {
+            if (arr[i] < arr[left]) {
+                swap(arr, i, index);
+                index++;
+            }
+        }
+        swap(arr, left, index - 1);
+        int pIndex =index - 1;
+
+
+        quickSortRecur(arr, left, pIndex - 1);
+        quickSortRecur(arr, pIndex + 1, right);
+    }
+
+    /**
+     * 快速排序 写法二
+     *
+     * 快速排序是不稳定的，其时间平均时间复杂度是O(nlgn)
+     *
+     * 选择一个基准数 比如arr[0]， 有两个指针， 右指针找比基准数小的，左指针找比基准数大的，交换之，
+     * 也就是将比 基准数小的移动到 其左边， 比基准数大的移动到右边，然后以基准数为界，分为两部分
+     * 分而治之 （递归）
+     *
+     * 如： 对5,3,8,6,4这个无序序列进行快速排序
+     * 5,3,8,6,4 用5作为比较的基准，最终会把5小的移动到5的左边，比5大的移动到5的右边。
+     * 5,3,8,6,4 首先设置i,j两个指针分别指向两端，j指针先扫描（思考一下为什么？）4比5小停止。然后i扫描，8比5大停止。交换i,j位置。
+     * 5,3,4,6,8 然后j指针再扫描，这时j扫描4时两指针相遇。停止。然后交换4和基准数。
+     * 4,3,5,6,8 一次划分后达到了左边比5小，右边比5大的目的。之后对左右子序列递归排序，最终得到有序序列。
+     *
+     * @author xiaoyu
+     * Date 2020-6-16
+     */
+    void sort2_1(int[] arr, int left, int right) {
+
+        if (left >= right) return;
+
+        int i, j, partitionIndex;
+        partitionIndex = left;
+        i = left;
+        j = right;
+
+        while (i < j) {
+            // 从后往前检索比 partitionIndex 小的值
+            while (arr[j] >= arr[partitionIndex] && i < j) j--;
+            // 从前往后检索比 partitionIndex 大的值
+            while (arr[i] <= arr[partitionIndex] && i < j) i++;
+            // 交换
+            swap(arr, i, j);
+        }
+        swap(arr, left, j);
+        sort2_1(arr, left, right - 1);
+        sort2_1(arr, left + 1, right);
 
     }
 
@@ -40,10 +93,15 @@ public class Sort {
      * O(n log n)
      */
 
+
+
     /**
-     * bubble sort
+     * bubble sort 冒泡排序: 依次比较相邻的两个元素, 将较大的数后移
      *
-     * 依次比较相邻的两个元素
+     * 第一次扫描, 从 0 ~ arr.leng - 1, 最大值到达末尾
+     * 第二次扫描 , 0 ~ arr.length - 2, 剩下的数中最大值到达末尾
+     * ...
+     *
      * <p>
      * O(n^2)
      *
@@ -52,9 +110,9 @@ public class Sort {
     public void bubbleSort(int[] arr) {
         if (arr == null) return;
 
-        // 外层循环从头到尾, 控制总共循环多少次
+        // 外层循环尾到头, 控制总共循环多少次
         for (int end = arr.length - 1; end > 0; end--) {
-            // 内存循环从末尾开始, 每次比较相邻的两个数, 小的往前浮动
+            // 内层循环从头开始, 每次比较相邻的两个数, 大的往后浮动
             // 也可以从头开始, 大的往后浮动
             for (int start = 1; start <= end; start++) {
                 if (arr[start] < arr[start - 1]) {// 无序, 需要交换
@@ -70,12 +128,9 @@ public class Sort {
     public void bubbleSortOptimized1(int[] arr) {
         if (arr == null) return;
 
-        // 外层循环从头到尾, 控制总共循环多少次
         for (int end = arr.length - 1; end > 0; end--) {
             boolean isSorted = true; // 假设数组完全有序
 
-            // 内存循环从末尾开始, 每次比较相邻的两个数, 小的往前浮动
-            // 也可以从头开始, 大的往后浮动
             for (int start = 1; start <= end; start++) {
                 if (arr[start] < arr[start - 1]) {// 无序, 需要交换
                     swap(arr, start, start - 1);
@@ -96,12 +151,9 @@ public class Sort {
     public void bubbleSortOptimized2(int[] arr) {
         if (arr == null) return;
 
-        // 外层循环从头到尾, 控制总共循环多少次
         for (int end = arr.length - 1; end > 0; end--) {
             int lastSwapIndex = end;// 初始值假设为 end, 意味着数组完全有序
 
-            // 内存循环从末尾开始, 每次比较相邻的两个数, 小的往前浮动
-            // 也可以从头开始, 大的往后浮动
             for (int start = 1; start <= end; start++) {
                 if (arr[start] < arr[start - 1]) {// 无序, 需要交换
                     swap(arr, start, start - 1);
@@ -142,7 +194,7 @@ public class Sort {
     public void heapSort(int[] arr) {
         for (int i = arr.length; i > 0; i--) {
             for (int j = 0; j <= i; j++) {
-                
+
             }
         }
     }
@@ -151,13 +203,13 @@ public class Sort {
 
     /**
      * 选择排序: 找出最大的元素, 和末尾元素交换位置
-     * 比之冒泡排序, 时间复杂度差不多, 但是位置交换大大减少
+     * 比之冒泡排序, 时间复杂度差不多, 但是位置交换次数大大减少
      * <p>
      * O(n^2)
      *
      * 不稳定
      *
-     * 优化: 内存循环就是找最值, 可以使用堆
+     * 优化: 内存循环就是找最值, 可以使用堆, 见堆排序
      */
     public void selectionSort(int[] arr) {
         if (arr == null) return;
