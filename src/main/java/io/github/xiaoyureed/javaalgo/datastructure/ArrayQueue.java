@@ -1,13 +1,12 @@
 package io.github.xiaoyureed.javaalgo.datastructure;
 
 /**
+ * 数组实现的队列, 使用了 循环数组
+ *
  * @author : xiaoyureed
  * 2020/7/12
  */
-public class MyArrayQueue {
-}
-
-class ArrayQueue<E> {
+public class ArrayQueue<E> {
 
     private Object items[];
 

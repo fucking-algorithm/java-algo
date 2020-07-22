@@ -1,6 +1,10 @@
 package io.github.xiaoyureed.javaalgo.datastructure;
 
 /**
+ * 最大堆 最小堆
+ *
+ * 堆排序会用到这种结构
+ *
  * @author : xiaoyureed
  * 2020/7/11
  */
